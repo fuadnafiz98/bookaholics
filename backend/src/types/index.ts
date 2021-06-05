@@ -1,6 +1,5 @@
 interface Payload {
-  _id: string;
-  role: string;
+  user_id: string;
   name: string;
 }
 

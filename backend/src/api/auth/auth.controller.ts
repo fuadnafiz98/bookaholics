@@ -1,65 +1,77 @@
 import { randomBytes } from "crypto";
-import argon2 from "argon2";
+import argon2, { hash } from "argon2";
 import { generateToken, validateToken } from "../../auth/jwt";
+import fetch from "../../loaders/got";
+import config from "../../config";
 
-async function signUp({
-  name,
-  password,
-  role,
-}: {
-  name: string;
-  password: string;
-  role: string;
-}) {
-  /*
-  const fetcheduser = await Users.query().findOne({ name: name });
-  if (fetcheduser) {
+async function signUp({ name, password }: { name: string; password: string }) {
+  let fetchedUser = await fetch.post(config.harperdbURL, {
+    body: JSON.stringify({
+      operation: "sql",
+      sql: `select name from dev.users u where name='${name}'`,
+    }),
+  });
+  fetchedUser = JSON.parse(fetchedUser.body);
+  if (fetchedUser[0] != undefined) {
     throw new Error("user already created");
   }
   const salt = randomBytes(32);
   const hashedPassword = await argon2.hash(password, { salt });
 
-  const user = await Users.query().insert({
-    name: name,
-    password: hashedPassword,
-    role: role,
-    refreshToken: refreshToken,
+  const insertedUser = await fetch.post(config.harperdbURL, {
+    body: JSON.stringify({
+      operation: "insert",
+      schema: "dev",
+      table: "users",
+      records: [
+        {
+          name: name,
+          password: hashedPassword,
+          refreshToken: null,
+        },
+      ],
+    }),
   });
 
+  fetchedUser = await fetch.post(config.harperdbURL, {
+    body: JSON.stringify({
+      operation: "sql",
+      sql: `select * from dev.users u where name='${name}'`,
+    }),
+  });
+
+  fetchedUser = JSON.parse(fetchedUser.body);
+  let user = fetchedUser[0];
   const token = generateToken(
     {
-      _id: user.id,
+      user_id: user.user_id,
       name: user.name,
-      role: user.role,
     },
     false
   );
-
   const refreshToken = generateToken(
     {
-      _id: user.id,
+      user_id: user.user_id,
       name: user.name,
-      role: user.role,
     },
     true
   );
 
-  const updatedUser = await Users.query()
-    .patch({ refreshToken: refreshToken })
-    .where("name", "=", name);
-  console.log("updated User", updatedUser);
+  await fetch.post(config.harperdbURL, {
+    body: JSON.stringify({
+      operation: "sql",
+      sql: `UPDATE dev.users SET refreshToken = '${refreshToken}' WHERE name='${user.name}'`,
+    }),
+  });
 
   return {
+    userId: user.user_id,
     username: user.name,
-    userId: user.id,
-    role: user.role,
     token: token,
     refreshToken,
   };
-  */
 }
 
-/*
 async function signIn({
   name,
   password,
@@ -70,42 +82,49 @@ async function signIn({
   name: string;
   token: string;
   refreshToken: string;
-  role: string;
   _id: string;
 }> {
-  const user = await Users.query().findOne({ name: name });
-  if (!user) {
+  let fetchedUser = await fetch.post(config.harperdbURL, {
+    body: JSON.stringify({
+      operation: "sql",
+      sql: `select * from dev.users where name='${name}'`,
+    }),
+  });
+  fetchedUser = JSON.parse(fetchedUser.body);
+  const user = fetchedUser[0];
+  // console.log(user);
+  if (user == undefined) {
     throw new Error("user not found");
   }
   const validPassword = await argon2.verify(user.password, password);
   if (validPassword) {
     const token = generateToken(
       {
-        name,
-        password,
-        _id: user.id,
-        role: user.role,
+        user_id: user.user_id,
+        name: user.name,
       },
       false
     );
     const refreshToken = generateToken(
       {
-        _id: user.id,
+        user_id: user.user_id,
         name: user.name,
-        role: user.role,
       },
       true
     );
-    const updatedUser = await Users.query()
-      .patch({ refreshToken: refreshToken })
-      .where("name", "=", name);
-    console.log("updated User", updatedUser);
+
+    await fetch.post(config.harperdbURL, {
+      body: JSON.stringify({
+        operation: "sql",
+        sql: `UPDATE dev.users SET refreshToken = '${refreshToken}' WHERE name='${user.name}'`,
+      }),
+    });
+
     return {
       name,
       token,
       refreshToken,
-      role: user.role,
-      _id: user.id,
+      _id: user.user_id,
     };
   } else {
     throw new Error("invalid password");
@@ -113,20 +132,23 @@ async function signIn({
 }
 
 async function signOut({ userInfo }) {
+  console.log(userInfo);
   if (userInfo === null || userInfo.name === null) return;
-  const updatedUser = await Users.query()
-    .patch({ refreshToken: null })
-    .where("name", "=", userInfo.name);
-  console.log("updated User", updatedUser);
+  await fetch.post(config.harperdbURL, {
+    body: JSON.stringify({
+      operation: "sql",
+      sql: `UPDATE dev.users SET refreshToken = null  WHERE user_id='${userInfo.userId}'`,
+    }),
+  });
 }
 
+/*
 async function checkToken(
   cookies
 ): Promise<{
   name: string;
   token: string;
   refreshToken: string;
-  role: string;
   _id: string;
 } | null> {
   if (cookies === null) return null;
@@ -155,6 +177,5 @@ async function checkToken(
     name: result[0].name,
   };
 }
-export { checkToken, signIn, signUp, signOut };
 */
-export { signUp };
+export { signIn, signUp, signOut };
