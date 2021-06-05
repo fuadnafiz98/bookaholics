@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 
 import auth from "./auth/auth.route";
+import bytes from "./bytes/bytes.routes";
 
 const router = express.Router();
 
@@ -11,5 +12,6 @@ router.get("/", (_: Request, res: Response) => {
 });
 
 router.use("/auth", auth);
+router.use("/bytes", bytes);
 
 export default router;
