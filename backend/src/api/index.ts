@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 
 import auth from "./auth/auth.route";
 import bytes from "./bytes/bytes.routes";
+import threads from "./threads/threads.routes";
 
 const router = express.Router();
 
@@ -13,5 +14,6 @@ router.get("/", (_: Request, res: Response) => {
 
 router.use("/auth", auth);
 router.use("/bytes", bytes);
+router.use("/threads", threads);
 
 export default router;

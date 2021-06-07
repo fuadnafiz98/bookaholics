@@ -1,6 +1,6 @@
 import express from "express";
 import { celebrate, Joi } from "celebrate";
-import { insertQuote, increaseLove, fetchData } from "./bytes.controller";
+import {insertQuote, increaseLove, fetchData } from "./bytes.controller";
 
 const router = express.Router();
 

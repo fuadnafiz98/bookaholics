@@ -72,4 +72,5 @@ const fetchData = async (req: Request, res: Response) => {
   }
 };
 
+
 export { insertQuote, increaseLove, fetchData };
