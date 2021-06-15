@@ -19,11 +19,17 @@ const getOne = async (req: Request, res: Response) => {
 
 const getAll = (req: Request, res: Response) => {};
 
+interface ThreadInsertResponse {
+  message: string;
+  inserted_hashes: string[];
+  skipped_hashes: string[];
+}
+
 const addOne = async (req: Request, res: Response) => {
   const data = req.body;
   console.log(data);
   try {
-    await fetch.post(config.harperdbURL, {
+    let ret = await fetch.post(config.harperdbURL, {
       body: JSON.stringify({
         operation: "insert",
         schema: "dev",
@@ -44,6 +50,26 @@ const addOne = async (req: Request, res: Response) => {
         ],
       }),
     });
+
+    if (data.parent == "book" && data.parent_id == null) {
+      let body: ThreadInsertResponse = await JSON.parse(ret.body);
+      console.log(body.inserted_hashes[0]);
+
+      await fetch.post(config.harperdbURL, {
+        body: JSON.stringify({
+          operation: "insert",
+          schema: "dev",
+          table: "books_threads",
+          records: [
+            {
+              thread_id: body.inserted_hashes[0],
+              book_id: data.book_id,
+            },
+          ],
+        }),
+      });
+    }
+
     return res.json({
       status: 200,
       message: "new thread created",

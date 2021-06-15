@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 
 import auth from "./auth/auth.route";
+import books from "./books/books.routes";
 import bytes from "./bytes/bytes.routes";
 import threads from "./threads/threads.routes";
 
@@ -13,6 +14,7 @@ router.get("/", (_: Request, res: Response) => {
 });
 
 router.use("/auth", auth);
+router.use("/books", books);
 router.use("/bytes", bytes);
 router.use("/threads", threads);
 
