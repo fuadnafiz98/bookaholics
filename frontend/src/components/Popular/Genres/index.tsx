@@ -1,19 +1,19 @@
-import Book from "./Book";
+import Genre from "./Genre";
 
-export default function Books() {
+export default function Genres() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <div className="py-4 text-2xl font-semibold">Popular Books</div>
+        <div className="py-4 text-2xl font-semibold">Popular Genres</div>
         <a className="text-xl font-semibold hover:underline" href="http://">
           Load More
         </a>
       </div>
       <div>
         <div className="flex justify-between">
-          <Book id="1" />
-          <Book id="2" />
-          <Book id="3" />
+          <Genre id="1" />
+          <Genre id="2" />
+          <Genre id="3" />
         </div>
       </div>
     </div>

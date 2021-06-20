@@ -4,10 +4,10 @@ interface Props {
   id: string;
 }
 
-const Book: React.FC<Props> = ({ id }) => {
+const Genre: React.FC<Props> = ({ id }) => {
   return (
     <>
-      <Link href={`/book/${id}`}>
+      <Link href={`/genre/${id}`}>
         <div className="hover:cursor-pointer">
           <div className="w-56 h-64 bg-gray-200"></div>
           <div>
@@ -22,4 +22,4 @@ const Book: React.FC<Props> = ({ id }) => {
   );
 };
 
-export default Book;
+export default Genre;
