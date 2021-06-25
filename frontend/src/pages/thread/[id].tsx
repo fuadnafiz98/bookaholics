@@ -13,6 +13,9 @@ export default function EachThread() {
         </div>
       </div>
       <div className="space-y-4">
+        <div>
+          <h2 className="text-xl font-semibold">Add Comment</h2>
+        </div>
         <div className="h-48">
           <textarea className="w-full h-full border border-gray-300 resize-none form-textarea" />
         </div>

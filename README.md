@@ -17,7 +17,7 @@
     - book name (optional)
     - author name
     - quote [optional] upload image -> text from image
-  - _db schema_
+  - *db schema*
     - user_id
     - book_name
     - author_name
