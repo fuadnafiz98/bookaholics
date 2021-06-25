@@ -3,6 +3,7 @@ import Head from "next/head";
 import Trending from "@/src/components/Trending";
 import Books from "../components/Popular/Books";
 import Genres from "../components/Popular/Genres";
+import Navbar from "../components/Navbar";
 
 export default function Home() {
   return (

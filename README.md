@@ -17,7 +17,7 @@
     - book name (optional)
     - author name
     - quote [optional] upload image -> text from image
-  - *db schema*
+  - _db schema_
     - user_id
     - book_name
     - author_name
@@ -65,22 +65,18 @@
 - book_thread_count
 - book_img_url
 
-
 ### Books-Threads
 
 - book_id
 - thread_id
-
 
 ### Books-Genres
 
 - book_id
 - genre_id
 
-
 ### Genres
 
 - genre_id
 - genre_name
 - genre_book_count
-

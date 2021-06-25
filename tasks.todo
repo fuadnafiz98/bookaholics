@@ -1,6 +1,8 @@
 ☐ home page contains 
   ☐ trending
     ☐ highest tags in last 24 hours.
-☐ set up `books/id` pages
-  ☐ design book info
-  ☐ then threads
+✔ set up `books/id` pages @done(21-06-26 00:08)
+  ✔ design book info @done(21-06-26 00:08)
+  ✔ then threads @done(21-06-26 00:08)
+☐ setup api calls
+  ☐ setup loading states.
