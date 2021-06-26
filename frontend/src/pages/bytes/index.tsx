@@ -1,7 +1,15 @@
 import Link from "next/link";
 import Byte from "@/src/components/Byte";
+import { useEffect } from "react";
+import config from "@/src/config";
+import useFetchPost from "@/src/hooks/useFetchPost";
+import Loading from "@/src/components/Loading";
 
 export default function Bytes() {
+  const [response, loading, error] = useFetchPost(config.API_URL + "/bytes/fetch", {}, "POST");
+  useEffect(() => {
+    console.log(response);
+  }, [response]);
   return (
     <>
       <div className="px-32 mt-16">
@@ -14,11 +22,20 @@ export default function Bytes() {
             </Link>
           </div>
         </div>
-        <div className="mt-4 divide-y-4 divide-gray-300 divide-dotted">
-          <Byte />
-          <Byte />
-          <Byte />
-        </div>
+        {loading ? (
+          <div className="grid h-16 place-content-center">
+            <Loading />
+          </div>
+        ) : (
+          <></>
+        )}
+        {!loading && (
+          <>
+            <div className="mt-4 divide-y-4 divide-gray-300 divide-dotted">
+              {response && response.map((res) => <Byte data={res} key={res.byte_id} />)}
+            </div>
+          </>
+        )}
       </div>
     </>
   );

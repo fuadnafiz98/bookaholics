@@ -35,9 +35,41 @@ const insertQuote = async (req: Request, res: Response) => {
 };
 
 const increaseLove = async (req: Request, res: Response) => {
-  const { inc = "true" } = req.query;
+  let { inc = "true" } = req.query;
   try {
     const { user_id, byte_id } = req.body;
+    let response = await fetch.post(config.harperdbURL, {
+      body: JSON.stringify({
+        operation: "sql",
+        sql: ` select * from dev.user_byte where user_id='${user_id}' and byte_id='${byte_id}'`,
+      }),
+    });
+    let isLiked = await response.body;
+    if (isLiked === "[]") {
+      inc = "true";
+      await fetch.post(config.harperdbURL, {
+        body: JSON.stringify({
+          operation: "insert",
+          schema: "dev",
+          table: "user_byte",
+          records: [
+            {
+              user_id,
+              byte_id,
+            },
+          ],
+        }),
+      });
+    } else {
+      inc = "false";
+      await fetch.post(config.harperdbURL, {
+        body: JSON.stringify({
+          operation: "sql",
+          sql: `delete from dev.user_byte where user_id='${user_id}' and byte_id='${byte_id}'`,
+        }),
+      });
+    }
+
     await fetch.post(config.harperdbURL, {
       body: JSON.stringify({
         operation: "sql",
@@ -50,6 +82,7 @@ const increaseLove = async (req: Request, res: Response) => {
 
     return res.json({
       status: 200,
+      inc,
       message: "love count updated",
     });
   } catch (err) {
@@ -62,7 +95,7 @@ const fetchData = async (req: Request, res: Response) => {
     let data = await fetch.post(config.harperdbURL, {
       body: JSON.stringify({
         operation: "sql",
-        sql: "select * from dev.bytes join dev.users where bytes.user_id=users.user_id limit 20",
+        sql: "select bytes.byte_id, bytes.love_count, bytes.quote, bytes.book_name, users.user_id, bytes.image_url, bytes.author, users.name from dev.bytes join dev.users where bytes.user_id=users.user_id order by bytes.__createdtime__ desc limit 20",
       }),
     });
     data = JSON.parse(data.body);
@@ -71,6 +104,5 @@ const fetchData = async (req: Request, res: Response) => {
     throw new Error(err);
   }
 };
-
 
 export { insertQuote, increaseLove, fetchData };
