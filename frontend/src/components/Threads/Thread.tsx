@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-interface ThreadInfo {
+interface ThreadJoinInfo {
   thread_id: string;
   __createdtime__: number;
   downvote: number;
@@ -20,8 +20,23 @@ interface ThreadInfo {
   __updatedtime__1: number;
 }
 
+interface ThreadInfo {
+  thread_id: string;
+  __createdtime__: number;
+  downvote: number;
+  view_count: number;
+  topic_body: string;
+  date: number;
+  user_id: string;
+  comment_count: number;
+  upvote: number;
+  __updatedtime__: number;
+  parent_id?: null;
+  topic_name: string;
+}
+
 interface Props {
-  data: ThreadInfo;
+  data: ThreadJoinInfo | ThreadInfo;
 }
 
 const Thread: React.FC<Props> = ({ data }) => {
@@ -45,7 +60,7 @@ const Thread: React.FC<Props> = ({ data }) => {
         </div>
         <div className="flex flex-col w-full ml-8 justify-evenly">
           <h2 className="text-xl font-bold text-gray-800">
-            <Link href={`/thread/${data.id}`}>{data.topic_name}</Link>
+            <Link href={`/thread/${data.thread_id}`}>{data.topic_name}</Link>
           </h2>
           <div className="flex text-lg font-medium text-gray-700">
             by • {new Date(data.date).toTimeString()} •

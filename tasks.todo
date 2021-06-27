@@ -7,4 +7,5 @@
 ✔ setup api calls @done(21-06-27 00:46)
   ✔ setup loading states. @done(21-06-27 00:46)
 ☐ learn how to share interface between multiple files.
-☐ @critical extract `add new thread` to separate file 
+✔ @critical extract `add new thread` to separate file @done(21-06-28 01:50)
+☐ @next add **upvote** and **downvote** to each thread.

@@ -5,7 +5,7 @@ import Success from "../Success";
 import Loading from "../Loading";
 import Thread from "./Thread";
 
-interface ThreadInfo {
+interface ThreadJoinInfo {
   thread_id: string;
   __createdtime__: number;
   downvote: number;
@@ -25,6 +25,21 @@ interface ThreadInfo {
   __updatedtime__1: number;
 }
 
+interface ThreadInfo {
+  thread_id: string;
+  __createdtime__: number;
+  downvote: number;
+  view_count: number;
+  topic_body: string;
+  date: number;
+  user_id: string;
+  comment_count: number;
+  upvote: number;
+  __updatedtime__: number;
+  parent_id?: null;
+  topic_name: string;
+}
+
 interface Book {
   __updatedtime__: number;
   book_img_url: string;
@@ -38,11 +53,12 @@ interface Book {
 }
 
 interface Props {
-  threads: ThreadInfo[] | null;
+  threads: ThreadJoinInfo[] | ThreadInfo[] | null;
   book: Book | null;
+  parent_id: string | null;
 }
 
-const Threads: React.FC<Props> = ({ book, threads }) => {
+const Threads: React.FC<Props> = ({ book, threads, parent_id = null }) => {
   const [showAddNew, setShowAddNew] = useState(false);
   const [topic, setTopic] = useState("");
   const [body, setBody] = useState("");
@@ -61,9 +77,9 @@ const Threads: React.FC<Props> = ({ book, threads }) => {
       // TODO: add custom userID
       body: JSON.stringify({
         user_id: "ee926269-3da8-44fb-b425-97db352537e6",
-        book_id: book?.book_id,
-        parent: "book",
-        parent_id: null,
+        book_id: book != null ? book?.book_id : null,
+        parent: book != null ? "book" : null,
+        parent_id: parent_id,
         topic_name: topic,
         topic_body: body,
         date: `${Date.now()}`,
@@ -119,14 +135,6 @@ const Threads: React.FC<Props> = ({ book, threads }) => {
               className="w-full h-32 border border-gray-300 resize-none form-textarea"
             />
           </div>
-          {/* <div>
-            <button
-              onClick={handleSubmit}
-              className="w-32 h-12 text-lg font-medium text-gray-800 bg-gray-200 hover:bg-gray-300"
-            >
-              Submit
-            </button>
-          </div> */}
           <div>
             <button
               onClick={handleSubmit}
@@ -140,7 +148,7 @@ const Threads: React.FC<Props> = ({ book, threads }) => {
       )}
       <div className="divide-y-2 divide-gray-200 divide-dashed">
         {threads?.map((thread) => (
-          <Thread key={thread.id} data={thread} />
+          <Thread key={thread.thread_id} data={thread} />
         ))}
       </div>
     </div>

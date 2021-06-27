@@ -1,32 +1,73 @@
 import Threads from "@/src/components/Threads";
+import Loading from "@/src/components/Loading";
+import config from "@/src/config";
 import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
+
+interface ThreadInfo {
+  thread_id: string;
+  __createdtime__: number;
+  downvote: number;
+  view_count: number;
+  topic_body: string;
+  date: number;
+  user_id: string;
+  comment_count: number;
+  upvote: number;
+  __updatedtime__: number;
+  parent_id?: null;
+  topic_name: string;
+}
 
 export default function EachThread() {
   const router = useRouter();
   const { id } = router.query;
+
+  const [loading, setLoading] = useState(false);
+  const [threadInfo, setThreadInfo] = useState<ThreadInfo | null>(null);
+  const [replies, setReplies] = useState<ThreadInfo[] | null>([]);
+
+  useEffect(() => {
+    setLoading(true);
+    async function fetchInfo() {
+      try {
+        let response = await fetch(config.API_URL + `/threads/${id}`);
+        const data = await response.json();
+        console.log(data);
+        setThreadInfo(data.threadInfo);
+        setReplies(data.replyInfo);
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    if (id != undefined) {
+      fetchInfo();
+    }
+  }, [id]);
   return (
     <div className="m-32 space-y-8">
-      <div className="">
-        <h1 className="my-2 text-2xl font-bold">Topic Name</h1>
-        <div className="text-lg bg-gray-200">
-          <h2>Topic body</h2>
-        </div>
-      </div>
-      <div className="space-y-4">
-        <div>
-          <h2 className="text-xl font-semibold">Add Comment</h2>
-        </div>
-        <div className="h-48">
-          <textarea className="w-full h-full border border-gray-300 resize-none form-textarea" />
-        </div>
-        <div>
-          <button className="w-32 h-12 text-lg font-medium text-gray-800 bg-gray-200 hover:bg-gray-300">Submit</button>
-        </div>
-      </div>
-      <div>
-        <h1 className="my-4 text-2xl font-black">Replies</h1>
-        <Threads />
-      </div>
+      {loading && <Loading />}
+      {!loading && threadInfo != null && (
+        <>
+          <div className="">
+            <h1 className="my-2 text-2xl font-bold">{threadInfo?.topic_name}</h1>
+            <div className="py-4 text-lg bg-gray-50">
+              <h2>{threadInfo?.topic_body}</h2>
+            </div>
+          </div>
+          <div>
+            <div className="flex text-lg font-medium text-gray-700">
+              <div className="mr-2 hover:underline">{threadInfo?.comment_count} comments</div>• {threadInfo?.view_count}{" "}
+              Views
+            </div>
+          </div>
+          <div>
+            <h1 className="my-4 text-2xl font-black">Replies</h1>
+            <Threads book={null} threads={replies} parent_id={threadInfo.thread_id} />
+          </div>
+        </>
+      )}
     </div>
   );
 }

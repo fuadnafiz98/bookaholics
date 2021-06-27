@@ -5,10 +5,7 @@ import threadController from "./threads.controller";
 
 const router = Router();
 
-router.get("/", async (req, res) => {
-  // TODO: getAll here
-  return res.json({ status: 200 });
-});
+router.get("/", threadController.getAll);
 
 router.post(
   "/new",

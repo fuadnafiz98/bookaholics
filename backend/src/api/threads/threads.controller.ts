@@ -11,13 +11,34 @@ const getOne = async (req: Request, res: Response) => {
         sql: `select * from dev.threads where thread_id='${id}'`,
       }),
     });
-    return res.json(JSON.parse(response.body)[0]);
+    let replyResponse = await fetch.post(config.harperdbURL, {
+      body: JSON.stringify({
+        operation: "sql",
+        sql: `select * from dev.threads where parent_id='${id}'`,
+      }),
+    });
+    return res.json({
+      threadInfo: JSON.parse(response.body)[0],
+      replyInfo: JSON.parse(replyResponse.body),
+    });
   } catch (err) {
     throw new Error(err);
   }
 };
 
-const getAll = (req: Request, res: Response) => {};
+const getAll = async (req: Request, res: Response) => {
+  try {
+    let response = await fetch.post(config.harperdbURL, {
+      body: JSON.stringify({
+        operation: "sql",
+        sql: "select * from dev.threads where parent is null and parent_id is null order by __createdtime__ desc",
+      }),
+    });
+    return res.json(JSON.parse(response.body));
+  } catch (err) {
+    throw new Error(err);
+  }
+};
 
 interface ThreadInsertResponse {
   message: string;
@@ -36,8 +57,8 @@ const addOne = async (req: Request, res: Response) => {
         table: "threads",
         records: [
           {
-            // TODO: add current user
             user_id: data.user_id,
+            parent: data.parent,
             parent_id: data.parent_id,
             topic_name: data.topic_name,
             topic_body: data.topic_body,

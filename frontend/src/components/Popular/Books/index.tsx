@@ -22,7 +22,7 @@ export default function Books() {
       )}
       <div>
         <div className="flex flex-wrap justify-between overflow-y-visible">
-          {response && response.data.map((book) => <Book data={book} />)}
+          {response && response.data.map((book, i: number) => <Book key={i} data={book} />)}
         </div>
       </div>
     </div>
