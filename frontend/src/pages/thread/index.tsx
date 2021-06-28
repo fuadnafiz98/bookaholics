@@ -57,8 +57,8 @@ export default function Discussion() {
         )}
         {!loading && threads && (
           <div className="divide-y-2 divide-gray-300 divide-dashed">
-            {threads.map((thread) => (
-              <Thread data={thread} />
+            {threads.map((thread, i) => (
+              <Thread data={thread} key={i} />
             ))}
           </div>
         )}

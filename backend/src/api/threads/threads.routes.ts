@@ -8,6 +8,17 @@ const router = Router();
 router.get("/", threadController.getAll);
 
 router.post(
+  "/like",
+  celebrate({
+    body: Joi.object({
+      user_id: Joi.string().required(),
+      thread_id: Joi.string().required(),
+    }),
+  }),
+  threadController.updateLike
+);
+
+router.post(
   "/new",
   celebrate({
     body: Joi.object({

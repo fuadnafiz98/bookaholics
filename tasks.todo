@@ -1,11 +1,14 @@
-☐ home page contains 
-  ☐ trending
-    ☐ highest tags in last 24 hours.
+☐ set up authentication
+  ☐ login, register page
 ✔ set up `books/id` pages @done(21-06-26 00:08)
   ✔ design book info @done(21-06-26 00:08)
   ✔ then threads @done(21-06-26 00:08)
 ✔ setup api calls @done(21-06-27 00:46)
   ✔ setup loading states. @done(21-06-27 00:46)
-☐ learn how to share interface between multiple files.
 ✔ @critical extract `add new thread` to separate file @done(21-06-28 01:50)
-☐ @next add **upvote** and **downvote** to each thread.
+✔ @next add **upvote** and **downvote** to each thread. @done(21-06-28 23:11)
+--FUTURE--
+☐ home page contains 
+  ☐ trending
+    ☐ highest tags in last 24 hours.
+☐ learn how to share interface between multiple files.

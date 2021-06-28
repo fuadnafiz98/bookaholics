@@ -142,10 +142,117 @@ const deleteOne = async (req: Request, res: Response) => {
   });
 };
 
+const updateLike = async (req: Request, res: Response) => {
+  let { status = "up" } = req.query;
+  console.log("status", status);
+  try {
+    const { user_id, thread_id } = req.body;
+    let response = await fetch.post(config.harperdbURL, {
+      body: JSON.stringify({
+        operation: "sql",
+        sql: ` select status from dev.user_thread where user_id='${user_id}' and thread_id='${thread_id}'`,
+      }),
+    });
+    let isLiked = await response.body;
+    console.log(isLiked);
+    if (isLiked === "[]") {
+      await fetch.post(config.harperdbURL, {
+        body: JSON.stringify({
+          operation: "insert",
+          schema: "dev",
+          table: "user_thread",
+          records: [
+            {
+              user_id,
+              thread_id,
+              status,
+            },
+          ],
+        }),
+      });
+      await fetch.post(config.harperdbURL, {
+        body: JSON.stringify({
+          operation: "sql",
+          sql:
+            status === "up"
+              ? `update dev.threads set upvote = upvote + 1 where thread_id = '${thread_id}'`
+              : ` update dev.threads set downvote = downvote + 1 where thread_id = '${thread_id}'`,
+        }),
+      });
+    } else {
+      isLiked = JSON.parse(isLiked)[0].status;
+      if (isLiked == status) {
+        //decrease status
+        await fetch.post(config.harperdbURL, {
+          body: JSON.stringify({
+            operation: "sql",
+            sql:
+              status === "up"
+                ? `update dev.threads set upvote = upvote - 1 where thread_id = '${thread_id}'`
+                : ` update dev.threads set downvote = downvote - 1 where thread_id = '${thread_id}'`,
+          }),
+        });
+        await fetch.post(config.harperdbURL, {
+          body: JSON.stringify({
+            operation: "sql",
+            sql: `delete from dev.user_thread where user_id='${user_id}' and thread_id='${thread_id}'`,
+          }),
+        });
+      } else {
+        // decrease the opposite
+        await fetch.post(config.harperdbURL, {
+          body: JSON.stringify({
+            operation: "sql",
+            sql:
+              isLiked === "up"
+                ? `update dev.threads set upvote = upvote - 1 where thread_id = '${thread_id}'`
+                : ` update dev.threads set downvote = downvote - 1 where thread_id = '${thread_id}'`,
+          }),
+        });
+
+        // increase the current
+        await fetch.post(config.harperdbURL, {
+          body: JSON.stringify({
+            operation: "sql",
+            sql:
+              status === "up"
+                ? `update dev.threads set upvote = upvote + 1 where thread_id = '${thread_id}'`
+                : ` update dev.threads set downvote = downvote + 1 where thread_id = '${thread_id}'`,
+          }),
+        });
+
+        //update the user_thread
+        await fetch.post(config.harperdbURL, {
+          body: JSON.stringify({
+            operation: "sql",
+            sql: `update dev.user_thread set status='${status}' where thread_id = '${thread_id}' and user_id='${user_id}'`,
+          }),
+        });
+      }
+    }
+    const data = await fetch.post(config.harperdbURL, {
+      body: JSON.stringify({
+        operation: "sql",
+        sql: `select  upvote, downvote from dev.threads where thread_id = '${thread_id}'`,
+      }),
+    });
+
+    return res.json({
+      status: 200,
+      statusMessage: status,
+      message: "like count updated",
+      count: JSON.parse(data.body)[0],
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export default {
   addOne,
   deleteOne,
   getOne,
   getAll,
   updateOne,
+  updateLike,
 };
