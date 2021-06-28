@@ -1,5 +1,6 @@
-☐ set up authentication
-  ☐ login, register page
+✔ set up authentication @done(21-06-29 02:12)
+  ✔ login, register page @done(21-06-29 02:12)
+  ☐ assign user_id to each place
 ✔ set up `books/id` pages @done(21-06-26 00:08)
   ✔ design book info @done(21-06-26 00:08)
   ✔ then threads @done(21-06-26 00:08)
