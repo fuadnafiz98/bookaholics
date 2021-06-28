@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import config from "@/src/config";
 import Loading from "../Loading";
 import Error from "../Error";
 import Success from "../Success";
+import { AuthContext } from "@/src/context/AuthContext";
 
 interface Props {
   book_id: string | null;
@@ -16,7 +17,10 @@ const NewThread: React.FC<Props> = ({ book_id = null, parent = null }) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  const auth = useContext(AuthContext);
+
   const handleSubmit = async () => {
+    if (!auth?.isAuthenticated) return;
     if (topic == "" || body == "") return;
     setLoading(true);
     const response = await fetch(config.API_URL + "/threads/new", {
@@ -24,9 +28,8 @@ const NewThread: React.FC<Props> = ({ book_id = null, parent = null }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      // TODO: add custom userID
       body: JSON.stringify({
-        user_id: "ee926269-3da8-44fb-b425-97db352537e6",
+        user_id: auth.authState.userInfo.userId,
         book_id: book_id,
         parent: parent,
         parent_id: null,

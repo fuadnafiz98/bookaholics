@@ -1,9 +1,10 @@
 import config from "@/src/config";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Error from "../Error";
 import Success from "../Success";
 import Loading from "../Loading";
 import Thread from "./Thread";
+import { AuthContext } from "@/src/context/AuthContext";
 
 interface ThreadJoinInfo {
   thread_id: string;
@@ -66,7 +67,10 @@ const Threads: React.FC<Props> = ({ book, threads, parent_id = null }) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  const auth = useContext(AuthContext);
+
   const handleSubmit = async () => {
+    if (!auth?.isAuthenticated) return;
     if (topic == "" || body == "") return;
     setLoading(true);
     const response = await fetch(config.API_URL + "/threads/new", {
@@ -74,9 +78,8 @@ const Threads: React.FC<Props> = ({ book, threads, parent_id = null }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      // TODO: add custom userID
       body: JSON.stringify({
-        user_id: "ee926269-3da8-44fb-b425-97db352537e6",
+        user_id: auth.authState.userInfo.userId,
         book_id: book != null ? book?.book_id : null,
         parent: book != null ? "book" : null,
         parent_id: parent_id,

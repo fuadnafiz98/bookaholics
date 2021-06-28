@@ -12,6 +12,6 @@ module.exports = {
     "prefer-promise-reject-errors": "off",
     "@typescript-eslint/no-parameter-properties": "off",
     "@typescript-eslint/explicit-member-accessibility": "off",
-    "@typescript-eslint/no-require-imports": "on",
+    "@typescript-eslint/no-require-imports": 1,
   },
 };

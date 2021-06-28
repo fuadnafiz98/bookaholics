@@ -1,7 +1,8 @@
 import config from "@/src/config";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Loading from "../Loading";
+import { AuthContext } from "@/src/context/AuthContext";
 
 interface Props {
   data: {
@@ -20,11 +21,14 @@ const Byte: React.FC<Props> = ({ data }) => {
   const [loveCount, setLoveCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  const auth = useContext(AuthContext);
+
   useEffect(() => {
     setLoveCount(data.love_count);
   }, []);
 
   const handleCount = async () => {
+    if (!auth?.isAuthenticated()) return;
     setLoading(true);
     console.log("increase");
     try {
@@ -35,7 +39,7 @@ const Byte: React.FC<Props> = ({ data }) => {
         },
         body: JSON.stringify({
           byte_id: data.byte_id,
-          user_id: data.user_id,
+          user_id: auth.authState.userInfo.userId,
         }),
       });
       const { inc } = await response.json();

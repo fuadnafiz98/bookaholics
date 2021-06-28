@@ -2,7 +2,8 @@ import { useState } from "react";
 import config from "@/src/config";
 import Link from "next/link";
 import Loading from "@/src/components/Loading";
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
+import { AuthContext } from "@/src/context/AuthContext";
 
 interface ThreadJoinInfo {
   thread_id: string;
@@ -48,12 +49,15 @@ const Thread: React.FC<Props> = ({ data }) => {
   const [downvote, setDownvote] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  const auth = useContext(AuthContext);
+
   useEffect(() => {
     setUpvote(data.upvote);
     setDownvote(data.downvote);
   }, []);
 
   const handleVote = async (vote: string) => {
+    if (!auth?.isAuthenticated()) return;
     console.log(vote);
     setLoading(true);
     try {
@@ -64,7 +68,7 @@ const Thread: React.FC<Props> = ({ data }) => {
         },
         body: JSON.stringify({
           thread_id: data.thread_id,
-          user_id: data.user_id,
+          user_id: auth.authState.userInfo.userId,
         }),
       });
       const { count, statusMessage } = await response.json();

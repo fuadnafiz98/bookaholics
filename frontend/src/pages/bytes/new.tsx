@@ -1,8 +1,9 @@
-import { MouseEventHandler, useState } from "react";
+import { MouseEventHandler, useState, useContext } from "react";
 import config from "@/src/config/index";
 import Error from "@/src/components/Error";
 import Loading from "@/src/components/Loading";
 import Success from "@/src/components/Success";
+import { AuthContext } from "@/src/context/AuthContext";
 
 export default function NewByte() {
   const [bookName, setBookName] = useState("");
@@ -13,7 +14,11 @@ export default function NewByte() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  const auth = useContext(AuthContext);
+
   const handleSubmit = async () => {
+    console.log(auth?.authState.userInfo.userId);
+    if (!auth?.isAuthenticated) return;
     console.log(bookName, authorName, quote);
     setLoading(true);
     if (bookName == "" || authorName == "" || quote == "") {
@@ -21,7 +26,6 @@ export default function NewByte() {
       return;
     }
 
-    // TODO: add specific userID!
     // TODO: add comment inside the object and handle error in backend.
     const newByte = {
       author: authorName,
@@ -29,7 +33,7 @@ export default function NewByte() {
       image_url: null,
       love_count: 0,
       quote: quote,
-      user_id: "76cbc6e2-d481-4fac-9eeb-a79ce52b9e37",
+      user_id: auth.authState.userInfo.userId,
     };
     try {
       const response = await fetch(config.API_URL + "/bytes/post", {
