@@ -12,6 +12,7 @@ async function signUp({ name, password }: { name: string; password: string }) {
     }),
   });
   fetchedUser = JSON.parse(fetchedUser.body);
+  //@ts-ignore
   if (fetchedUser[0] != undefined) {
     throw new Error("user already created");
   }
@@ -41,6 +42,7 @@ async function signUp({ name, password }: { name: string; password: string }) {
   });
 
   fetchedUser = JSON.parse(fetchedUser.body);
+  //@ts-ignore
   let user = fetchedUser[0];
   const token = generateToken(
     {
@@ -91,6 +93,7 @@ async function signIn({
     }),
   });
   fetchedUser = JSON.parse(fetchedUser.body);
+  //@ts-ignore
   const user = fetchedUser[0];
   // console.log(user);
   if (user == undefined) {
@@ -131,6 +134,7 @@ async function signIn({
   }
 }
 
+//@ts-ignore
 async function signOut({ userInfo }) {
   console.log(userInfo);
   if (userInfo === null || userInfo.name === null) return;

@@ -142,6 +142,24 @@ const deleteOne = async (req: Request, res: Response) => {
   });
 };
 
+const updateView = async (req: Request, res: Response) => {
+  try {
+    const { thread_id } = req.body;
+    await fetch.post(config.harperdbURL, {
+      body: JSON.stringify({
+        operation: "sql",
+        sql: `update dev.threads set view_count = view_count + 1 where thread_id = '${thread_id}'`,
+      }),
+    });
+    return res.json({
+      status: 200,
+      statusMessage: status,
+      message: "view count updated",
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 const updateLike = async (req: Request, res: Response) => {
   let { status = "up" } = req.query;
   console.log("status", status);
@@ -255,4 +273,5 @@ export default {
   getAll,
   updateOne,
   updateLike,
+  updateView,
 };

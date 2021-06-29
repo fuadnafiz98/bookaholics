@@ -1,5 +1,5 @@
 import config from "@/src/config";
-import { useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import Error from "../Error";
 import Success from "../Success";
 import Loading from "../Loading";
@@ -71,7 +71,7 @@ const Threads: React.FC<Props> = ({ book, threads, parent_id = null }) => {
 
   const handleSubmit = async () => {
     if (!auth?.isAuthenticated) return;
-    if (topic == "" || body == "") return;
+    if (topic === "" || body === "") return;
     setLoading(true);
     const response = await fetch(config.API_URL + "/threads/new", {
       method: "POST",
@@ -80,8 +80,9 @@ const Threads: React.FC<Props> = ({ book, threads, parent_id = null }) => {
       },
       body: JSON.stringify({
         user_id: auth.authState.userInfo.userId,
-        book_id: book != null ? book?.book_id : null,
-        parent: book != null ? "book" : null,
+        // @ts-ignore
+        book_id: book === null ? book?.book_id : null,
+        parent: book !== null ? "book" : null,
         parent_id: parent_id,
         topic_name: topic,
         topic_body: body,

@@ -38,6 +38,16 @@ router.post(
   threadController.addOne
 );
 
+router.post(
+  "/view",
+  celebrate({
+    body: Joi.object({
+      thread_id: Joi.string().required(),
+    }),
+  }),
+  threadController.updateView
+);
+threadController.updateLike;
 router.get("/:id", threadController.getOne);
 router.post(
   "/:id",

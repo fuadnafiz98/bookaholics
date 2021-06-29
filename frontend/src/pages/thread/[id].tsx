@@ -28,6 +28,25 @@ export default function EachThread() {
   const [replies, setReplies] = useState<ThreadInfo[] | null>([]);
 
   useEffect(() => {
+    async function increaseView() {
+      try {
+        const response = await fetch(config.API_URL + `/threads/view`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            thread_id: id,
+          }),
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    increaseView();
+  }, [id]);
+
+  useEffect(() => {
     setLoading(true);
     async function fetchInfo() {
       try {

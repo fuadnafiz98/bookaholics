@@ -10,14 +10,14 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>@ts-next</title>
+        <title>Bookaholics</title>
       </Head>
       <Auth>
         <div className="flex justify-between px-32 space-x-8">
           <Trending />
           <div className="flex-grow space-y-16">
             <Books />
-            <Genres />
+            {/* <Genres /> */}
           </div>
         </div>
       </Auth>

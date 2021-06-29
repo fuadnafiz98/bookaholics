@@ -80,8 +80,8 @@ export default function EachBook() {
       {!loading && book != undefined && (
         <>
           <div className="flex space-x-8 justify-evenly">
-            <div className="w-1/3 h-[32rem] bg-gray-300">
-              <div className=""></div>
+            <div className="w-1/3 h-[32rem] grid place-content-center">
+              <img className="object-contain h-full" src={book.book_img_url} alt={book.book_title} />
             </div>
             <div className="w-2/3">
               <div className="flex flex-col justify-between h-full divide-y-2 divide-solid">

@@ -1,8 +1,7 @@
-import { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import config from "@/src/config";
 import Link from "next/link";
 import Loading from "@/src/components/Loading";
-import { useEffect, useContext } from "react";
 import { AuthContext } from "@/src/context/AuthContext";
 
 interface ThreadJoinInfo {
@@ -83,38 +82,36 @@ const Thread: React.FC<Props> = ({ data }) => {
   };
 
   return (
-    <>
-      <div className="flex">
-        <div className="flex flex-col items-center justify-center w-1/12 h-32 space-y-3 bg-gray-50">
-          <div className="flex items-center space-x-2">
-            <button onClick={() => handleVote("up")} className="grid w-8 h-8 hover:bg-gray-300 place-content-center">
-              <img className="flex items-center justify-center w-6 h-6" src="/assets/up.svg" alt="up svg" />
-            </button>
-            <p className="text-lg font-medium text-gray-800">{upvote}</p>
-          </div>
-          {loading && (
-            <div className="grid place-content-center">
-              <Loading />
-            </div>
-          )}
-          <div className="flex items-center space-x-2">
-            <button onClick={() => handleVote("down")} className="grid w-8 h-8 hover:bg-gray-300 place-content-center">
-              <img className="flex items-center justify-center w-6 h-6" src="/assets/down.svg" alt="down svg" />
-            </button>
-            <p className="text-lg font-medium text-gray-600">{downvote}</p>
-          </div>
+    <div className="flex">
+      <div className="flex flex-col items-center justify-center w-1/12 h-32 space-y-3 bg-gray-50">
+        <div className="flex items-center space-x-2">
+          <button onClick={() => handleVote("up")} className="grid w-8 h-8 hover:bg-gray-300 place-content-center">
+            <img className="flex items-center justify-center w-6 h-6" src="/assets/up.svg" alt="up svg" />
+          </button>
+          <p className="text-lg font-medium text-gray-800">{upvote}</p>
         </div>
-        <div className="flex flex-col w-full ml-8 justify-evenly">
-          <h2 className="text-xl font-bold text-gray-800">
-            <Link href={`/thread/${data.thread_id}`}>{data.topic_name}</Link>
-          </h2>
-          <div className="flex text-lg font-medium text-gray-700">
-            by • {new Date(data.date).toTimeString()} •
-            <div className="hover:underline">{data.comment_count} comments</div>• {data.view_count} Views
+        {loading && (
+          <div className="grid place-content-center">
+            <Loading />
           </div>
+        )}
+        <div className="flex items-center space-x-2">
+          <button onClick={() => handleVote("down")} className="grid w-8 h-8 hover:bg-gray-300 place-content-center">
+            <img className="flex items-center justify-center w-6 h-6" src="/assets/down.svg" alt="down svg" />
+          </button>
+          <p className="text-lg font-medium text-gray-600">{downvote}</p>
         </div>
       </div>
-    </>
+      <div className="flex flex-col w-full ml-8 justify-evenly">
+        <h2 className="text-xl font-bold text-gray-800">
+          <Link href={`/thread/${data.thread_id}`}>{data.topic_name}</Link>
+        </h2>
+        <div className="flex text-lg font-medium text-gray-700">
+          by • {new Date(data.date).toTimeString()} •
+          <div className="hover:underline">{data.comment_count} comments</div>• {data.view_count} Views
+        </div>
+      </div>
+    </div>
   );
 };
 
