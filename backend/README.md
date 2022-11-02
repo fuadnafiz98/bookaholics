@@ -1,1 +1,0 @@
-# Hashnode opensource project
